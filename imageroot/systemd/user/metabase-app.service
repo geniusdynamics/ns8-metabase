@@ -27,7 +27,6 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/metabase-app.pid \
     --env=NGINX_* \
     --env JAVA_TIMEZONE=US/Pacific \
     ${METABASE_IMAGE}
-ExecStartPost=/bin/bash -c 'while ! curl --fail -I http://localhost:3000/api/health; do sleep 10; done'
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/metabase-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP metabase-app
 SyslogIdentifier=%u
