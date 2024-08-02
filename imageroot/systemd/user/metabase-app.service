@@ -22,6 +22,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/metabase-app.pid \
     --cidfile %t/metabase-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/metabase.pod-id --replace -d --name  metabase-app \
     --env-file=%S/state/metabase-database.env \
+    --env-file=%S/state/metabase.env \
     --volume urandom:/dev/random:Z \
     --env=NGINX_* \
     --env JAVA_TIMEZONE=US/Pacific \
