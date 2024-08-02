@@ -19,9 +19,9 @@
     "no_services": "No services",
     "no_images": "No images",
     "no_volumes": "No volumes",
-    "kickstart_webapp": "kickstart webapp",
+    "kickstart_webapp": "metabase webapp",
     "not_configured": "Not configured",
-    "open_webapp": "Open kickstart",
+    "open_webapp": "Open metabase",
     "configure": "Configure"
   },
   "settings": {
