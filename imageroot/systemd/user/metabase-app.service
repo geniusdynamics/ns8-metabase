@@ -1,0 +1,38 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman  metabase-app.service
+BindsTo=metabase.service
+After=metabase.service postgresql-app.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=-%S/state/smarthost.env
+WorkingDirectory=%S/state
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/mkdir -p config
+ExecStartPre=/bin/rm -f %t/metabase-app.pid %t/metabase-app.ctr-id
+ExecStartPre=-runagent discover-smarthost
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/metabase-app.pid \
+    --cidfile %t/metabase-app.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/metabase.pod-id --replace -d --name  metabase-app \
+    --env-file=%S/state/metabase-database.env \
+    --volume urandom:/dev/random:Z \
+    --env=NGINX_* \
+    --env JAVA_TIMEZONE=US/Pacific \
+    ${METABASE_IMAGE}
+ExecStartPost=/bin/bash -c 'while ! curl --fail -I http://localhost:3000/api/health; do sleep 10; done'
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/metabase-app.ctr-id -t 10
+ExecReload=/usr/bin/podman kill -s HUP metabase-app
+SyslogIdentifier=%u
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/metabase-app.ctr-id
+PIDFile=%t/metabase-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target

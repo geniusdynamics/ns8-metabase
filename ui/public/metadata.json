@@ -1,19 +1,19 @@
 {
-  "name": "kickstart",
+  "name": "Metabase",
   "description": {
-    "en": "My kickstart module"
+    "en": "Fast analytics with the friendly UX and integrated tooling to let your company explore data on their own."
   },
-  "categories": [],
+  "categories": ["collaboration"],
   "authors": [
     {
-      "name": "Name Surname",
-      "email": "author@yourmail.org"
+      "name": "Martin Bhuong",
+      "email": "martin@genius.ke"
     }
   ],
   "docs": {
-    "documentation_url": "https://docs.kickstart.com/",
+    "documentation_url": "https://www.metabase.com/docs/latest/",
     "bug_url": "https://github.com/NethServer/dev",
-    "code_url": "https://github.com/author/ns8-kickstart"
+    "code_url": "https://github.com/author/ns8-metabase"
   },
-  "source": "ghcr.io/nethserver/kickstart"
+  "source": "ghcr.io/nethserver/metabase"
 }
