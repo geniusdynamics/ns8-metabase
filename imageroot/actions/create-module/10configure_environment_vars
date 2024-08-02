@@ -44,7 +44,13 @@ metabase_database = {
     'MB_DB_DBNAME': POSTGRES_DB
 }
 agent.write_envfile("metabase-database.env", metabase_database)
+# Generate a 32-byte random binary string
+random_bytes = os.urandom(24)
 
+# Encode the binary string to a 32-character string using base64
+MB_ENCRYPTION_SECRET_KEY = base64.urlsafe_b64encode(random_bytes).rstrip(b'=').decode('ascii')
 
+agent.set_env('MB_ENCRYPTION_SECRET_KEY', MB_ENCRYPTION_SECRET_KEY)
 
-#agent.dump_env()
+# just before starting systemd unit
+agent.dump_env()
