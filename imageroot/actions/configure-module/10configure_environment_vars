@@ -8,26 +8,54 @@
 import json
 import sys
 import agent
+import os
 
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
 
+HOST = data.get('host')
 #This is specific to you module, so you need to change it accordingly.
-# we read a json stdin {"vars1":true, "var2":"foo", "vars3": 3} and we writ it to .config/state/environment
-# Upper case to set environment variable and minor case to read from stdin
+# GET metabase SECRET KEY FROM ENVIROMENT
+SECRET_KEY_BASE = os.getenv('SECRET_KEY_BASE')
+metabase_PREPL_HOST="0.0.0.0"
+MB_SITE_URL="https://"+HOST
+metabase_REDIS_URI="redis://redis-app/0"
+# EMAIL SETTINGS
+rdb = agent.redis_connect(use_replica=True)
+smtp_settings = agent.get_smarthost_settings(rdb)
 
-# this values must exists in the json stdin
-# agent.set_env("MAIL_SERVER", data["mail_server"])
-# agent.set_env("LDAP_DOMAIN", data["ldap_domain"])
+# SMTP Configuration
+# This is only needed if you intend on sending emails from your metabase instance (such as for password resets or email financial reports).
+# Resend.com is a good option that offers a free tier for sending emails.
+# SMTP_ADDRESS=
+# SMTP_PORT=465
+# SMTP_USERNAME=
+# SMTP_PASSWORD=
+# SMTP_TLS_ENABLED=true
 
-# you can add default values for the following variables
-# agent.set_env("MAIL_DOMAIN",data.get("mail_domain",""))
-# agent.set_env("WOWORKERSCOUNT",data.get("workers_count",3))
-# agent.set_env("AUXILIARYACCOUNT",data.get("auxiliary_account",True))
-# agent.set_env("ACTIVESYNC",data.get("activesync",False))
 
+SMTP_ADDRESS=smtp_settings['host']
+SMTP_PORT=smtp_settings['port']
+SMTP_USERNAME=smtp_settings['username']
+SMTP_PASSWORD=smtp_settings['password']
+SMTP_TLS_ENABLED='true' if smtp_settings['tls_verify'] else 'false'
+SMTP_ENCRYPTION = smtp_settings['encrypt_smtp']
+EMAIL_SENDER=smtp_settings['username']
+MB_EMAIL_REPLY_TO=smtp_settings['username']
 
-# Make sure everything is saved inside the environment file
+metabase_config = {
+    "MB_SITE_URL": MB_SITE_URL,
+    "MB_ENCRYPTION_SECRET_KEY": MB_ENCRYPTION_SECRET_KEY,
+    "MB_EMAIL_SMTP_HOST": SMTP_ADDRESS,
+    "MB_EMAIL_SMTP_PORT": SMTP_PORT,
+    "MB_EMAIL_SMTP_USERNAME": SMTP_USERNAME,
+    "MB_EMAIL_SMTP_PASSWORD": SMTP_PASSWORD,
+    "MB_EMAIL_FROM_ADDRESS": EMAIL_SENDER,
+    "MB_EMAIL_SMTP_SECURITY": SMTP_ENCRYPTION,
+    "MB_EMAIL_REPLY_TO": MB_EMAIL_REPLY_TO,
+    "MB_EMAIL_FROM_NAME": "metabase"
+}
+agent.write_envfile("metabase.env", metabase_config)
 # just before starting systemd unit
 #agent.dump_env()
