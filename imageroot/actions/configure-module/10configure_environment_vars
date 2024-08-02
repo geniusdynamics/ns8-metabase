@@ -17,7 +17,7 @@ data = json.load(sys.stdin)
 HOST = data.get('host')
 #This is specific to you module, so you need to change it accordingly.
 # GET metabase SECRET KEY FROM ENVIROMENT
-SECRET_KEY_BASE = os.getenv('SECRET_KEY_BASE')
+MB_ENCRYPTION_SECRET_KEY = os.getenv('MB_ENCRYPTION_SECRET_KEY')
 metabase_PREPL_HOST="0.0.0.0"
 MB_SITE_URL="https://"+HOST
 metabase_REDIS_URI="redis://redis-app/0"
