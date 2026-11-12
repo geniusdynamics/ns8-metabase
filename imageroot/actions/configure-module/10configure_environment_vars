@@ -23,7 +23,6 @@ MB_SITE_URL="https://"+HOST
 metabase_REDIS_URI="redis://redis-app/0"
 # EMAIL SETTINGS
 rdb = agent.redis_connect(use_replica=True)
-smtp_settings = agent.get_smarthost_settings(rdb)
 
 # SMTP Configuration
 # This is only needed if you intend on sending emails from your metabase instance (such as for password resets or email financial reports).
