@@ -3,17 +3,19 @@
   "description": {
     "en": "Fast analytics with the friendly UX and integrated tooling to let your company explore data on their own."
   },
-  "categories": ["collaboration"],
+  "categories": [
+    "collaboration"
+  ],
   "authors": [
     {
-      "name": "Martin Bhuong",
-      "email": "martin@genius.ke"
+      "name": "Genius Dynamics",
+      "email": "support@genius.ke"
     }
   ],
   "docs": {
     "documentation_url": "https://www.metabase.com/docs/latest/",
-    "bug_url": "https://github.com/NethServer/dev",
-    "code_url": "https://github.com/author/ns8-metabase"
+    "bug_url": "https://github.com/geniusdynamics/ns8-metabase/issues",
+    "code_url": "https://github.com/geniusdynamics/ns8-metabase"
   },
-  "source": "ghcr.io/nethserver/metabase"
+  "source": "ghcr.io/geniusdynamics/metabase"
 }
