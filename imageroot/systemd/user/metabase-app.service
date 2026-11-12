@@ -10,19 +10,17 @@ After=metabase.service postgresql-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
-EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/smarthost.env
-WorkingDirectory=%S/state
+EnvironmentFile=%E/state/environment
+WorkingDirectory=%E/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p config
 ExecStartPre=/bin/rm -f %t/metabase-app.pid %t/metabase-app.ctr-id
-ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/metabase-app.pid \
     --cidfile %t/metabase-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/metabase.pod-id --replace -d --name  metabase-app \
-    --env-file=%S/state/metabase-database.env \
-    --env-file=%S/state/metabase.env \
+    --env-file=%E/state/metabase-database.env \
+    --env-file=%E/state/metabase.env \
     --volume /dev/urandom:/dev/random:ro \
     --env=NGINX_* \
     --env JAVA_TIMEZONE=US/Pacific \
