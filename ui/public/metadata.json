@@ -1,7 +1,8 @@
 {
   "name": "Metabase",
   "description": {
-    "en": "Fast analytics with the friendly UX and integrated tooling to let your company explore data on their own."
+    "en": "Fast analytics with the friendly UX and integrated tooling to let your company explore data on their own.",
+    "it": "Metabase permette di interrogare i dati e creare dashboard senza scrivere codice."
   },
   "categories": [
     "collaboration"

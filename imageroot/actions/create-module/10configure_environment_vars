@@ -51,7 +51,12 @@ random_bytes = os.urandom(24)
 # Encode the binary string to a 32-character string using base64
 MB_ENCRYPTION_SECRET_KEY = base64.urlsafe_b64encode(random_bytes).rstrip(b'=').decode('ascii')
 
-agent.set_env('MB_ENCRYPTION_SECRET_KEY', MB_ENCRYPTION_SECRET_KEY)
+# Secrets must not go through agent.set_env(), which stores them in Redis:
+# keep the key in a private file (mode 0600), included in the backup
+path = os.path.join(os.environ["AGENT_STATE_DIR"], "passwords.env")
+fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+with os.fdopen(fd, "w") as fp:
+    fp.write(f"MB_ENCRYPTION_SECRET_KEY={MB_ENCRYPTION_SECRET_KEY}\n")
 
 # just before starting systemd unit
 agent.dump_env()
