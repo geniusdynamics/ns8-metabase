@@ -8,6 +8,7 @@
 import json
 import sys
 import agent
+import base64
 import os
 
 # Try to parse the stdin as JSON.
