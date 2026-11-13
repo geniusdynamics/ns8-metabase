@@ -17,12 +17,13 @@ data = json.load(sys.stdin)
 HOST = data.get('host')
 #This is specific to you module, so you need to change it accordingly.
 # GET metabase SECRET KEY FROM ENVIROMENT
-MB_ENCRYPTION_SECRET_KEY = os.getenv('MB_ENCRYPTION_SECRET_KEY')
+MB_ENCRYPTION_SECRET_KEY = agent.read_envfile('passwords.env')['MB_ENCRYPTION_SECRET_KEY']
 metabase_PREPL_HOST="0.0.0.0"
 MB_SITE_URL="https://"+HOST
 metabase_REDIS_URI="redis://redis-app/0"
 # EMAIL SETTINGS
 rdb = agent.redis_connect(use_replica=True)
+smtp_settings = agent.get_smarthost_settings(rdb)
 
 # SMTP Configuration
 # This is only needed if you intend on sending emails from your metabase instance (such as for password resets or email financial reports).
