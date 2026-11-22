@@ -87,6 +87,27 @@
       <cv-column :md="4" :max="4">
         <NsInfoCard
           light
+          :title="ldapDomain || $t('status.ldap_disabled')"
+          :description="$t('status.ldap_login')"
+          :icon="Locked32"
+          :loading="loading.getConfiguration"
+          class="min-height-card"
+        >
+          <template slot="content">
+            <NsButton
+              kind="ghost"
+              :icon="ArrowRight20"
+              :disabled="loading.getConfiguration"
+              @click="goToAppPage(instanceName, 'settings')"
+            >
+              {{ $t("status.configure") }}
+            </NsButton>
+          </template>
+        </NsInfoCard>
+      </cv-column>
+      <cv-column :md="4" :max="4">
+        <NsInfoCard
+          light
           :title="installationNodeTitle"
           :titleTooltip="installationNodeTitleTooltip"
           :description="$t('status.installation_node')"
@@ -317,6 +338,7 @@ export default {
       isRedirectChecked: false,
       redirectTimeout: 0,
       host: "",
+      ldapDomain: "",
       status: {
         instance: "",
         services: [],
@@ -432,6 +454,7 @@ export default {
     getConfigurationCompleted(taskContext, taskResult) {
       const config = taskResult.output;
       this.host = config.host;
+      this.ldapDomain = config.ldap_domain || "";
       this.loading.getConfiguration = false;
     },
     async getStatus() {

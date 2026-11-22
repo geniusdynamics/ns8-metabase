@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+# After Metabase is running: create the first administrator, if one was given
+# and the instance has no account yet. Does nothing otherwise (so configuring
+# an existing instance never changes its administrator).
+
+import sys
+
+import agent
+import metabase_admin
+
+try:
+    outcome = metabase_admin.apply()
+except RuntimeError as error:
+    print(agent.SD_ERR + str(error), file=sys.stderr)
+    sys.exit(1)
+
+if outcome == "created":
+    print("Metabase administrator account created", file=sys.stderr)
+elif outcome == "exists":
+    print(agent.SD_WARNING + "Metabase already has an account: the administrator was not created",
+          file=sys.stderr)

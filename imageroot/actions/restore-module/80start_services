@@ -12,5 +12,5 @@ exec 1>&2
 # If the control reaches this step, the service can be enabled and started
 
 
-systemctl --user enable kickstart.service
-systemctl --user restart kickstart.service
+systemctl --user enable metabase.service
+systemctl --user restart metabase.service
