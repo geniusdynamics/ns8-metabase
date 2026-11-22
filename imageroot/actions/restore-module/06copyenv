@@ -20,4 +20,11 @@ for evar in [
     ]:
     agent.set_env(evar, original_environment[evar])
 
+# Optional variables: backups of 1.0.0 do not have them
+for evar in [
+        "LDAP_DOMAIN",
+    ]:
+    if evar in original_environment:
+        agent.set_env(evar, original_environment[evar])
+
 agent.dump_env()

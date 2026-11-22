@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+# A user domain became available, was removed or changed its configuration:
+# if Metabase uses it, bind it again and restart the application, which
+# renders the LDAP settings again (see bin/discover-ldap). The local accounts
+# keep working whatever the domain does.
+
+from metabase_ldap import handle_domain_event
+
+handle_domain_event()

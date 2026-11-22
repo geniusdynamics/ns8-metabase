@@ -8,11 +8,15 @@
 #
 # Read configuration
 #
+# Secrets are never returned: not the LDAP bind password, not the password of
+# the first administrator.
 
 import os
 import sys
 import json
 import agent
+import metabase_admin
+import metabase_ldap
 
 # Prepare return variable
 config = {}
@@ -21,6 +25,29 @@ config = {}
 config["host"] = os.getenv("TRAEFIK_HOST","")
 config["http2https"] = os.getenv("TRAEFIK_HTTP2HTTPS") == "True"
 config["lets_encrypt"] = os.getenv("TRAEFIK_LETS_ENCRYPT") == "True"
+
+# Directory login
+domain = metabase_ldap.configured_domain()
+choices = metabase_ldap.domain_choices()
+config["ldap_domain"] = domain
+config["ldap_domains"] = choices
+config["ldap_active"] = False
+config["ldap_schema"] = ""
+config["ldap_error"] = ""
+if domain:
+    known = next((item for item in choices if item["name"] == domain), None)
+    if known is None:
+        config["ldap_error"] = "ldap_domain_unavailable"
+    else:
+        config["ldap_schema"] = known["schema"]
+        config["ldap_active"] = known["available"]
+        if not known["available"]:
+            config["ldap_error"] = "ldap_proxy_unreachable"
+
+# First administrator
+config["setup_complete"] = metabase_admin.setup_complete()
+config["admin_pending"] = metabase_admin.pending()
+config["admin_email"] = metabase_admin.email() if config["admin_pending"] else ""
 
 # Dump the configuration to stdout
 json.dump(config, fp=sys.stdout)

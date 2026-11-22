@@ -7,7 +7,21 @@
         {
             "host": "metabase.domain.org",
             "http2https": true,
-            "lets_encrypt": true
+            "lets_encrypt": true,
+            "ldap_domain": "example.org",
+            "ldap_active": true,
+            "ldap_schema": "rfc2307",
+            "ldap_error": "",
+            "ldap_domains": [
+                {
+                    "name": "example.org",
+                    "schema": "rfc2307",
+                    "available": true
+                }
+            ],
+            "setup_complete": true,
+            "admin_pending": false,
+            "admin_email": ""
         }
     ],
     "type": "object",
@@ -31,6 +45,64 @@
             "type": "boolean",
             "title": "HTTP to HTTPS redirection",
             "description": "Redirect all the HTTP requests to HTTPS"
+        },
+        "ldap_domain": {
+            "type": "string",
+            "description": "Selected NS8 user domain for the LDAP login, empty when none"
+        },
+        "ldap_active": {
+            "type": "boolean",
+            "description": "True when Metabase is started with the LDAP login of the selected user domain"
+        },
+        "ldap_schema": {
+            "type": "string",
+            "description": "Schema of the selected user domain: rfc2307 (OpenLDAP) or ad"
+        },
+        "ldap_error": {
+            "type": "string",
+            "description": "Why the selected user domain cannot be used: empty, ldap_domain_unavailable or ldap_proxy_unreachable"
+        },
+        "ldap_domains": {
+            "type": "array",
+            "description": "User domains that can be selected",
+            "items": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "schema",
+                    "available"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "schema": {
+                        "type": "string",
+                        "enum": [
+                            "rfc2307",
+                            "ad"
+                        ]
+                    },
+                    "available": {
+                        "type": "boolean"
+                    }
+                }
+            }
+        },
+        "setup_complete": {
+            "type": [
+                "boolean",
+                "null"
+            ],
+            "description": "True when Metabase already has an account, false when its setup wizard is still open, null when Metabase does not answer"
+        },
+        "admin_pending": {
+            "type": "boolean",
+            "description": "True while a configured first administrator waits for Metabase to be ready. The password is never returned"
+        },
+        "admin_email": {
+            "type": "string",
+            "description": "Email of the pending first administrator, empty otherwise"
         }
     }
 }

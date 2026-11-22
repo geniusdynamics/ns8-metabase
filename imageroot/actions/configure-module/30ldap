@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+# Remember the selected user domain (its name only: the bind password stays in
+# the Ldapproxy and is rendered into state/ldap.env when Metabase starts),
+# bind the module to it and refresh the rendered settings. An empty domain
+# unbinds it and disables the LDAP login.
+
+import json
+import sys
+
+import agent
+import metabase_ldap
+
+request = json.load(sys.stdin)
+if "ldap_domain" not in request:
+    sys.exit(0)
+
+domain = request["ldap_domain"].strip()
+if domain != metabase_ldap.configured_domain():
+    agent.set_env("LDAP_DOMAIN", domain)
+    agent.dump_env()
+metabase_ldap.bind(domain)
+# Written now as well, so that the file is right even before the restart
+metabase_ldap.discover()

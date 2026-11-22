@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# ExecStartPre of metabase-app: write state/ldap.env (mode 0600) with the
+# Metabase LDAP settings of the selected NS8 user domain.
+
+import metabase_ldap
+
+metabase_ldap.discover()
