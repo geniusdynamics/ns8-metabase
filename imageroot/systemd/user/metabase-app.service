@@ -17,11 +17,14 @@ RestartSec=10
 TimeoutStopSec=70
 ExecStartPre=/bin/mkdir -p config
 ExecStartPre=/bin/rm -f %t/metabase-app.pid %t/metabase-app.ctr-id
+# Render the LDAP settings of the selected NS8 user domain into state/ldap.env (0600)
+ExecStartPre=runagent discover-ldap
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/metabase-app.pid \
     --cidfile %t/metabase-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/metabase.pod-id --replace -d --name  metabase-app \
     --env-file=%E/state/metabase-database.env \
     --env-file=%E/state/metabase.env \
+    --env-file=%E/state/ldap.env \
     --volume /dev/urandom:/dev/random:ro \
     --env=NGINX_* \
     --env JAVA_TIMEZONE=US/Pacific \

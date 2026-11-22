@@ -7,7 +7,10 @@
         {
             "host": "metabase.domain.org",
             "http2https": true,
-            "lets_encrypt": true
+            "lets_encrypt": true,
+            "ldap_domain": "example.org",
+            "admin_email": "admin@domain.org",
+            "admin_password": "a-long-secret-password"
         }
     ],
     "type": "object",
@@ -32,6 +35,22 @@
             "type": "boolean",
             "title": "HTTP to HTTPS redirection",
             "description": "Redirect all the HTTP requests to HTTPS"
+        },
+        "ldap_domain": {
+            "type": "string",
+            "maxLength": 253,
+            "title": "User domain for LDAP login",
+            "description": "Name of an NS8 user domain (OpenLDAP or Active Directory) whose users can sign in to Metabase. Empty disables the LDAP login. Omitted keeps the current value."
+        },
+        "admin_email": {
+            "type": "string",
+            "maxLength": 254,
+            "description": "Email of the first Metabase administrator. Used only while Metabase has no account yet; an instance that already has accounts is never changed."
+        },
+        "admin_password": {
+            "type": "string",
+            "maxLength": 128,
+            "description": "Write-only password of the first Metabase administrator (12 to 72 characters). Kept in a 0600 file until used, never returned. Empty or missing sets no administrator."
         }
     }
 }

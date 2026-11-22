@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+# Bind again the user domain of the restored LDAP settings. When the domain
+# does not exist on this cluster the restore goes on with the LDAP login
+# disabled: the user-domain-changed event handler enables it once the domain
+# is available.
+
+import metabase_ldap
+
+metabase_ldap.rebind()
