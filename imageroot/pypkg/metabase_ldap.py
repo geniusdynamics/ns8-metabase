@@ -211,10 +211,35 @@ def rebind():
               "disabled until the domain is available", file=sys.stderr)
 
 
-def handle_domain_event():
-    """Event handler of user-domain-changed and ldap-provider-changed."""
-    import json
+def read_env(path=None):
+    values = {}
+    try:
+        for line in (path or state_path(ENV_NAME)).read_text().splitlines():
+            key, sep, value = line.partition("=")
+            if sep:
+                values[key] = value
+    except FileNotFoundError:
+        pass
+    return values
+
+
+def restart_if_changed():
+    """Restart the application only when the rendered settings would differ from the running ones."""
     import subprocess
+
+    try:
+        wanted = render(configured_domain())
+    except Exception:
+        wanted = {"MB_LDAP_ENABLED": "false"}
+    if wanted == read_env():
+        return
+    subprocess.run(["systemctl", "--user", "--no-block", "try-restart", "metabase-app.service"],
+                   check=False)
+
+
+def handle_domain_event():
+    """Handler of user-domain-changed and ldap-provider-changed."""
+    import json
 
     domain = configured_domain()
     if not domain:
@@ -228,5 +253,10 @@ def handle_domain_event():
         return  # another domain changed
     # The domain may have been added back after a restore into a cluster without it
     rebind()
-    subprocess.run(["systemctl", "--user", "--no-block", "try-restart", "metabase-app.service"],
-                   check=False)
+    restart_if_changed()
+
+
+def handle_module_removed():
+    """Handler of module-removed: removing the account provider of the domain removes the domain."""
+    if configured_domain():
+        restart_if_changed()

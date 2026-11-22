@@ -277,5 +277,8 @@ Metabase login
     RETURN    ${code}
 
 LDAP login is disabled by the domain event
-    ${content} =    Execute Command    runagent -m ${module_id} cat ldap.env
-    Should Be Equal    ${content}    MB_LDAP_ENABLED=false
+    # never print the file: it holds the bind password while the domain exists
+    ${count} =    Execute Command    runagent -m ${module_id} grep -c -x 'MB_LDAP_ENABLED=false' ldap.env
+    Should Be Equal    ${count}    1
+    ${lines} =    Execute Command    runagent -m ${module_id} grep -c '' ldap.env
+    Should Be Equal    ${lines}    1

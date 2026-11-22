@@ -129,7 +129,7 @@ The bind password is never in the command line, in Redis (`state/environment` ho
 
 ### User domain changes
 
-When the selected domain is removed, created again or changes its configuration, the NS8 core emits `user-domain-changed` (or `ldap-provider-changed` when an external account provider is added or removed). The module reacts by binding the domain again if needed and restarting the Metabase application, which renders the settings again. Metabase and its local accounts stay available; only the directory login follows the domain.
+When the selected domain is removed, created again or changes its configuration, the NS8 core emits `user-domain-changed` (or `ldap-provider-changed` when an external account provider is added or removed). Removing the account provider module of an internal domain does not emit them, so the module also handles `module-removed` and restarts only when the settings it would render have changed. The module reacts by binding the domain again if needed and restarting the Metabase application, which renders the settings again. Metabase and its local accounts stay available; only the directory login follows the domain.
 
 ### What is not included
 
